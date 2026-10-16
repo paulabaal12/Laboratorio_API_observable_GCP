@@ -1,0 +1,11 @@
+{
+  "target_url": "https://<salida function_url de terraform>",
+  "n_requests": 6000,
+  "mu_min": 30,
+  "sigma_min": 10,
+  "invalid_share": 0.08,
+  "seed": 42,
+  "scenarios": [
+    { "start_min": 35, "end_min": 45, "effect": "double_errors", "category": "electronics" }
+  ]
+}
