@@ -12,7 +12,7 @@ WITH reqs AS (
 ),
 t0 AS (
   SELECT MIN(timestamp) AS run_start FROM reqs
-  -- SELECT TIMESTAMP('2026-10-20T14:00:00Z') AS run_start
+  -- SELECT TIMESTAMP('2026-10-16T01:15:09Z') AS run_start   -- inicio de la corrida del 15/10 (19:15 CST)
 ),
 arrivals AS (
   SELECT TIMESTAMP_DIFF(r.timestamp, t0.run_start, MILLISECOND) / 60000.0 AS arrival_min

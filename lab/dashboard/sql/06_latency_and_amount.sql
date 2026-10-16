@@ -2,7 +2,7 @@
 -- Complementa la latencia nativa: aquí es tiempo dentro del handler, sin red ni arranque en frío.
 -- Gráfica sugerida: tabla o barras · X = category.
 SELECT
-  IFNULL(JSON_VALUE(json_payload.category), '(sin categoría)') AS category,
+  IFNULL(JSON_VALUE(json_payload.category), '(sin categoria)') AS category,
   COUNT(*) AS requests,
   APPROX_QUANTILES(SAFE_CAST(JSON_VALUE(json_payload.latency_ms) AS FLOAT64), 100)[OFFSET(50)] AS latency_p50_ms,
   APPROX_QUANTILES(SAFE_CAST(JSON_VALUE(json_payload.latency_ms) AS FLOAT64), 100)[OFFSET(95)] AS latency_p95_ms,
