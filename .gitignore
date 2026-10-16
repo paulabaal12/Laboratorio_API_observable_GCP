@@ -1,0 +1,20 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+.build/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Salidas del simulador y de las pruebas locales
+requests.csv
+requests_plan.csv
+*.log
+
+# Binarios locales (terraform descargado dentro del repo)
+.tools/

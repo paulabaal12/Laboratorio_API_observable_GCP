@@ -1,0 +1,3 @@
+# Scripts de bash siempre con LF (con core.autocrlf=true, CRLF rompe bash)
+*.sh text eol=lf
+.claude/hooks/superpowers-session-start text eol=lf
