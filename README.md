@@ -1,5 +1,7 @@
 # Laboratorio: API serverless observable en GCP (CC3106 · UVG)
 
+**Paula Rebeca Barillas** · Carné 22764
+
 API de pedidos en **Cloud Run functions**, una hora de tráfico simulado con
 errores intencionales y un **dashboard de Cloud Monitoring** que combina
 métricas nativas, métricas basadas en logs, SQL de Log Analytics y un panel de logs.
@@ -282,8 +284,33 @@ Verificación con los archivos de respaldo:
 - Solo hay 2 logs extra, las pruebas manuales.
 - Medido desde 01:15:09 UTC, los timestamps de los logs dan μ = 29.91 y σ = 9.88.
 
-## Skills de Claude Code (alcance proyecto)
-`.claude/skills/` contiene una selección de [google/skills](https://github.com/google/skills)
-(gcloud, Cloud Run, Cloud Build, auth, Logging, Monitoring) y las skills de
-[obra/superpowers](https://github.com/obra/superpowers). Su hook de inicio está en
-`.claude/hooks/` y se registra en `.claude/settings.json`. Las licencias están en `.claude/licenses/`.
+## Skills de Claude Code (solo local)
+Durante el desarrollo se usó, a nivel de proyecto, una selección de
+[google/skills](https://github.com/google/skills) (gcloud, Cloud Run, Cloud Build, auth,
+Logging, Monitoring) y las skills de [obra/superpowers](https://github.com/obra/superpowers).
+Viven en `.claude/`, que está en `.gitignore`, así que no forman parte del repositorio.
+
+## Limpieza de recursos
+Al terminar el laboratorio (después de tomar capturas y hacer el [respaldo](#respaldo-antes-de-borrar-los-recursos)),
+se borra todo lo creado en GCP para que no genere costos. En PowerShell, desde la raíz del repo:
+
+```powershell
+$env:PROJECT_ID = "tu-proyecto"
+$G = "C:\Program Files (x86)\Git\bin\bash.exe"     # Git Bash (en PowerShell, "bash" abre WSL)
+
+# 1. Métricas basadas en logs y dashboard (se crearon con gcloud; Terraform no los conoce)
+& $G lab/dashboard/commands.sh cleanup
+
+# 2. Función, cuentas de servicio, bucket de código e IAM (19 recursos)
+.\.tools\terraform.exe -chdir=lab/infra destroy -var "project_id=$env:PROJECT_ID"
+
+# 3. Revisar lo que queda fuera de Terraform
+gcloud artifacts repositories list --project $env:PROJECT_ID
+```
+
+Qué queda después de la limpieza:
+- **Log Analytics en `_Default`** sigue activado: es un cambio permanente que `destroy` no revierte. No tiene costo adicional.
+- **Los logs** se conservan los 30 días de retención del bucket `_Default`.
+- **Las APIs** quedan habilitadas (`disable_on_destroy = false`); habilitadas no cuestan.
+- **Artifact Registry:** Cloud Functions crea un repositorio (normalmente `gcf-artifacts`) con la imagen de la función. Si aparece en el paso 3 y nada más del proyecto lo usa, se borra con
+  `gcloud artifacts repositories delete gcf-artifacts --location us-central1 --project $env:PROJECT_ID`.
