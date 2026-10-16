@@ -1,0 +1,30 @@
+# Métrica basada en logs (distribución): histograma del campo amount de los
+# pedidos creados con éxito, etiquetada por category y customer_tier.
+# Crear ANTES de correr el simulador (no cuenta logs anteriores):
+#   gcloud logging metrics create orders_amount \
+#     --project="$PROJECT_ID" --config-from-file=lab/dashboard/metrics/orders_amount.yaml
+# Si cambiaste function_name en terraform.tfvars, cambia "orders-api" abajo.
+description: "Orders API: distribución del monto (amount) de pedidos creados"
+filter: >-
+  resource.type="cloud_run_revision"
+  AND resource.labels.service_name="orders-api"
+  AND jsonPayload.message="request_completed"
+  AND jsonPayload.endpoint="POST /orders"
+  AND jsonPayload.outcome="success"
+metricDescriptor:
+  metricKind: DELTA
+  valueType: DISTRIBUTION
+  unit: "1"
+  displayName: "Orders API - monto de pedidos"
+  labels:
+    - key: category
+      valueType: STRING
+    - key: customer_tier
+      valueType: STRING
+valueExtractor: EXTRACT(jsonPayload.amount)
+labelExtractors:
+  category: EXTRACT(jsonPayload.category)
+  customer_tier: EXTRACT(jsonPayload.customer_tier)
+bucketOptions:
+  explicitBuckets:
+    bounds: [0, 10, 25, 50, 100, 200, 400, 800, 1600, 3200, 6400]

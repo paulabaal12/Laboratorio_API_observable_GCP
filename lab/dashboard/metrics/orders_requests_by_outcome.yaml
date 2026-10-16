@@ -1,0 +1,34 @@
+# Métrica basada en logs (contador): una cuenta por solicitud completada,
+# etiquetada por outcome / endpoint / error_type / category.
+# Crear ANTES de correr el simulador (no cuenta logs anteriores):
+#   gcloud logging metrics create orders_requests_by_outcome \
+#     --project="$PROJECT_ID" --config-from-file=lab/dashboard/metrics/orders_requests_by_outcome.yaml
+# Si cambiaste function_name en terraform.tfvars, cambia "orders-api" abajo.
+description: "Orders API: solicitudes completadas por outcome (desde logs estructurados)"
+filter: >-
+  resource.type="cloud_run_revision"
+  AND resource.labels.service_name="orders-api"
+  AND jsonPayload.message="request_completed"
+metricDescriptor:
+  metricKind: DELTA
+  valueType: INT64
+  unit: "1"
+  displayName: "Orders API - solicitudes por outcome"
+  labels:
+    - key: outcome
+      valueType: STRING
+      description: "success | client_error | server_error"
+    - key: endpoint
+      valueType: STRING
+      description: "Ruta lógica, p. ej. POST /orders"
+    - key: error_type
+      valueType: STRING
+      description: "Tipo de error (vacío si success)"
+    - key: category
+      valueType: STRING
+      description: "Categoría del pedido"
+labelExtractors:
+  outcome: EXTRACT(jsonPayload.outcome)
+  endpoint: EXTRACT(jsonPayload.endpoint)
+  error_type: EXTRACT(jsonPayload.error_type)
+  category: EXTRACT(jsonPayload.category)
