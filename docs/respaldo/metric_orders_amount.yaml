@@ -1,0 +1,37 @@
+﻿bucketOptions:
+  explicitBuckets:
+    bounds:
+    - 0.0
+    - 10.0
+    - 25.0
+    - 50.0
+    - 100.0
+    - 200.0
+    - 400.0
+    - 800.0
+    - 1600.0
+    - 3200.0
+    - 6400.0
+createTime: '2026-10-16T01:13:11.402096266Z'
+description: 'Orders API: distribuci?n del monto (amount) de pedidos creados'
+filter: resource.type="cloud_run_revision" AND resource.labels.service_name="orders-api"
+  AND jsonPayload.message="request_completed" AND jsonPayload.endpoint="POST /orders"
+  AND jsonPayload.outcome="success"
+labelExtractors:
+  category: EXTRACT(jsonPayload.category)
+  customer_tier: EXTRACT(jsonPayload.customer_tier)
+metricDescriptor:
+  description: 'Orders API: distribuci?n del monto (amount) de pedidos creados'
+  displayName: Orders API - monto de pedidos
+  labels:
+  - key: customer_tier
+  - key: category
+  metricKind: DELTA
+  name: projects/lab-observabilidad/metricDescriptors/logging.googleapis.com/user/orders_amount
+  type: logging.googleapis.com/user/orders_amount
+  unit: '1'
+  valueType: DISTRIBUTION
+name: orders_amount
+resourceName: projects/lab-observabilidad/metrics/orders_amount
+updateTime: '2026-10-16T01:13:11.402096266Z'
+valueExtractor: EXTRACT(jsonPayload.amount)

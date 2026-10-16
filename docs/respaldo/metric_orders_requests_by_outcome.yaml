@@ -1,0 +1,29 @@
+﻿createTime: '2026-10-16T01:13:02.526030188Z'
+description: 'Orders API: solicitudes completadas por outcome (desde logs estructurados)'
+filter: resource.type="cloud_run_revision" AND resource.labels.service_name="orders-api"
+  AND jsonPayload.message="request_completed"
+labelExtractors:
+  category: EXTRACT(jsonPayload.category)
+  endpoint: EXTRACT(jsonPayload.endpoint)
+  error_type: EXTRACT(jsonPayload.error_type)
+  outcome: EXTRACT(jsonPayload.outcome)
+metricDescriptor:
+  description: 'Orders API: solicitudes completadas por outcome (desde logs estructurados)'
+  displayName: Orders API - solicitudes por outcome
+  labels:
+  - description: success | client_error | server_error
+    key: outcome
+  - description: Ruta l?gica, p. ej. POST /orders
+    key: endpoint
+  - description: Categor?a del pedido
+    key: category
+  - description: Tipo de error (vac?o si success)
+    key: error_type
+  metricKind: DELTA
+  name: projects/lab-observabilidad/metricDescriptors/logging.googleapis.com/user/orders_requests_by_outcome
+  type: logging.googleapis.com/user/orders_requests_by_outcome
+  unit: '1'
+  valueType: INT64
+name: orders_requests_by_outcome
+resourceName: projects/lab-observabilidad/metrics/orders_requests_by_outcome
+updateTime: '2026-10-16T01:13:02.526030188Z'

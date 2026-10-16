@@ -1,0 +1,443 @@
+﻿{
+  "displayName": "Orders API - observabilidad (CC3106)",
+  "etag": "dff7cbe0a5220faa783c76c0daa9463f",
+  "labels": {
+    "cc3106": ""
+  },
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "height": 16,
+        "widget": {
+          "title": "Solicitudes por minuto (nativa)",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "solicitudes/min",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"run.googleapis.com/request_count\" resource.type=\"cloud_run_revision\" resource.label.\"service_name\"=\"orders-api\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "label": "solicitudes/min",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Latencia p50 / p95 (nativa)",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "p50",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"run.googleapis.com/request_latencies\" resource.type=\"cloud_run_revision\" resource.label.\"service_name\"=\"orders-api\""
+                  }
+                }
+              },
+              {
+                "legendTemplate": "p95",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_95",
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"run.googleapis.com/request_latencies\" resource.type=\"cloud_run_revision\" resource.label.\"service_name\"=\"orders-api\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "label": "ms",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Instancias activas (nativa)",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "instancias activas",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "perSeriesAligner": "ALIGN_MAX"
+                    },
+                    "filter": "metric.type=\"run.googleapis.com/container/instance_count\" resource.type=\"cloud_run_revision\" resource.label.\"service_name\"=\"orders-api\" metric.label.\"state\"=\"active\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "label": "instancias",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 16
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Errores por outcome (m?trica de logs)",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "${metric.labels.outcome}",
+                "minAlignmentPeriod": "60s",
+                "plotType": "STACKED_BAR",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.\"outcome\""
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"logging.googleapis.com/user/orders_requests_by_outcome\" resource.type=\"cloud_run_revision\" metric.label.\"outcome\"!=\"success\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "label": "errores/min",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 16
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Errores por tipo y endpoint (m?trica de logs)",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "${metric.labels.endpoint} ? ${metric.labels.error_type}",
+                "minAlignmentPeriod": "60s",
+                "plotType": "STACKED_BAR",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "300s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.\"endpoint\"",
+                        "metric.label.\"error_type\""
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"logging.googleapis.com/user/orders_requests_by_outcome\" resource.type=\"cloud_run_revision\" metric.label.\"outcome\"!=\"success\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "label": "errores / 5 min",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 32
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Monto de pedidos creados - histograma (m?trica de logs)",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "300s",
+                "plotType": "HEATMAP",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "300s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"logging.googleapis.com/user/orders_amount\" resource.type=\"cloud_run_revision\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "label": "amount (USD)",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 32
+      },
+      {
+        "height": 20,
+        "widget": {
+          "logsPanel": {
+            "filter": "resource.type=\"cloud_run_revision\"\nresource.labels.service_name=\"orders-api\"\njsonPayload.message=\"request_completed\"\nseverity>=WARNING"
+          },
+          "title": "Panel de logs (severity >= WARNING)"
+        },
+        "width": 48,
+        "yPos": 48
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Solicitudes por minuto (SQL)",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "dimensions": [
+                  {
+                    "column": "minute",
+                    "columnType": "TIMESTAMP",
+                    "sortColumn": "minute",
+                    "sortOrder": "SORT_ORDER_ASCENDING",
+                    "timeBinSize": "0s"
+                  }
+                ],
+                "measures": [
+                  {
+                    "aggregationFunction": {
+                      "type": "sum"
+                    },
+                    "column": "requests"
+                  }
+                ],
+                "plotType": "STACKED_BAR",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "opsAnalyticsQuery": {
+                    "sql": "-- Conteo de solicitudes por minuto (deber??a verse la campana ~N(30, 10)).\n-- Reemplaza la tabla por la salida `log_analytics_view` de terraform.\n-- Gr??fica sugerida: l??nea / barras ?? X = minute ?? Y = requests.\nSELECT\n  TIMESTAMP_TRUNC(timestamp, MINUTE) AS minute,\n  COUNT(*) AS requests\nFROM `lab-observabilidad.global._Default._Default`\nWHERE JSON_VALUE(json_payload.message) = 'request_completed'\n  AND JSON_VALUE(resource.labels.service_name) = 'orders-api'\nGROUP BY minute\nORDER BY minute\n"
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 68
+      },
+      {
+        "height": 16,
+        "widget": {
+          "timeSeriesTable": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "opsAnalyticsQuery": {
+                    "sql": "-- ?? y ?? estimados de los minutos de llegada (comparar con config.json: ??=30, ??=10).\n-- El minuto de llegada se mide desde el inicio de la corrida. Por defecto se usa\n-- la primera solicitud (MIN(timestamp)), que llega ~0.1 min despu??s del inicio real.\n-- Para mayor precisi??n, descomenta run_start y pon la hora \"Inicio de la corrida\"\n-- que imprime el simulador (UTC). Ajusta el selector de tiempo a la ventana de la corrida.\n-- Gr??fica sugerida: tabla / scorecard.\nWITH reqs AS (\n  SELECT timestamp\n  FROM `lab-observabilidad.global._Default._Default`\n  WHERE JSON_VALUE(json_payload.message) = 'request_completed'\n    AND JSON_VALUE(resource.labels.service_name) = 'orders-api'\n),\nt0 AS (\n  SELECT MIN(timestamp) AS run_start FROM reqs\n  -- SELECT TIMESTAMP('2026-10-20T14:00:00Z') AS run_start\n),\narrivals AS (\n  SELECT TIMESTAMP_DIFF(r.timestamp, t0.run_start, MILLISECOND) / 60000.0 AS arrival_min\n  FROM reqs AS r CROSS JOIN t0\n  WHERE r.timestamp >= t0.run_start\n)\nSELECT\n  COUNT(*)                         AS n,\n  ROUND(AVG(arrival_min), 2)       AS mu_estimada_min,\n  ROUND(STDDEV(arrival_min), 2)    AS sigma_estimada_min,\n  ROUND(MIN(arrival_min), 2)       AS primer_min,\n  ROUND(MAX(arrival_min), 2)       AS ultimo_min\nFROM arrivals\n"
+                  }
+                }
+              }
+            ],
+            "metricVisualization": "NUMBER"
+          },
+          "title": "? y ? estimadas (SQL)"
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 68
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Errores por outcome por minuto (SQL)",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [
+                  {
+                    "aggregationFunction": {
+                      "type": "count"
+                    },
+                    "column": "outcome",
+                    "limit": 10,
+                    "sortOrder": "SORT_ORDER_DESCENDING"
+                  }
+                ],
+                "dimensions": [
+                  {
+                    "column": "minute",
+                    "columnType": "TIMESTAMP",
+                    "sortColumn": "minute",
+                    "sortOrder": "SORT_ORDER_ASCENDING",
+                    "timeBinSize": "0s"
+                  }
+                ],
+                "measures": [
+                  {
+                    "aggregationFunction": {
+                      "type": "sum"
+                    },
+                    "column": "errors"
+                  }
+                ],
+                "plotType": "STACKED_BAR",
+                "sort": [
+                  {
+                    "column": "minute",
+                    "direction": "SORT_ORDER_NONE"
+                  }
+                ],
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "opsAnalyticsQuery": {
+                    "sql": "-- Errores por outcome y minuto (client_error vs server_error).\n-- Debe notarse el escenario double_errors (electronics, min 35-45 de la corrida).\n-- Gr??fica sugerida: barras apiladas ?? X = minute ?? Y = errors ?? serie = outcome.\nSELECT\n  TIMESTAMP_TRUNC(timestamp, MINUTE) AS minute,\n  JSON_VALUE(json_payload.outcome) AS outcome,\n  COUNT(*) AS errors\nFROM `lab-observabilidad.global._Default._Default`\nWHERE JSON_VALUE(json_payload.message) = 'request_completed'\n  AND JSON_VALUE(resource.labels.service_name) = 'orders-api'\n  AND JSON_VALUE(json_payload.outcome) != 'success'\nGROUP BY minute, outcome\nORDER BY minute, outcome\n\n"
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 84
+      },
+      {
+        "height": 16,
+        "widget": {
+          "timeSeriesTable": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "opsAnalyticsQuery": {
+                    "sql": "-- ??Se ve el escenario? Tasa de error por categor??a, dentro vs fuera de la ventana\n-- min 35-45 de la corrida. Se espera ~2x en electronics dentro de la ventana.\n-- Nota: los 404 de IDs inexistentes no tienen categor??a (category = NULL).\n-- Gr??fica sugerida: tabla o barras agrupadas (categoria x ventana).\nWITH reqs AS (\n  SELECT\n    timestamp,\n    IFNULL(JSON_VALUE(json_payload.category), '(sin categor??a)') AS category,\n    JSON_VALUE(json_payload.outcome) AS outcome\n  FROM `lab-observabilidad.global._Default._Default`\n  WHERE JSON_VALUE(json_payload.message) = 'request_completed'\n    AND JSON_VALUE(resource.labels.service_name) = 'orders-api'\n),\nt0 AS (SELECT MIN(timestamp) AS run_start FROM reqs)\nSELECT\n  category,\n  IF(TIMESTAMP_DIFF(timestamp, run_start, SECOND) BETWEEN 35 * 60 AND 45 * 60,\n     'min 35-45', 'resto') AS ventana,\n  COUNT(*) AS requests,\n  COUNTIF(outcome = 'client_error') AS client_errors,\n  COUNTIF(outcome = 'server_error') AS server_errors,\n  ROUND(100 * COUNTIF(outcome != 'success') / COUNT(*), 2) AS pct_error\nFROM reqs CROSS JOIN t0\nGROUP BY category, ventana\nORDER BY category, ventana\n"
+                  }
+                }
+              }
+            ],
+            "metricVisualization": "NUMBER"
+          },
+          "title": "Escenario: electronics min 35-45 vs resto (SQL)"
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 84
+      },
+      {
+        "height": 16,
+        "widget": {
+          "timeSeriesTable": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "opsAnalyticsQuery": {
+                    "sql": "-- Resumen de la corrida: solicitudes por outcome, status y tipo de error.\n-- Contrastar con requests.csv (verdad de referencia del simulador).\n-- Gr??fica sugerida: tabla o barras horizontales.\nSELECT\n  JSON_VALUE(json_payload.outcome)          AS outcome,\n  JSON_VALUE(json_payload.status_code)      AS status_code,\n  IFNULL(JSON_VALUE(json_payload.error_type), '-') AS error_type,\n  JSON_VALUE(json_payload.endpoint)         AS endpoint,\n  COUNT(*)                                  AS requests,\n  ROUND(100 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS pct\nFROM `lab-observabilidad.global._Default._Default`\nWHERE JSON_VALUE(json_payload.message) = 'request_completed'\n  AND JSON_VALUE(resource.labels.service_name) = 'orders-api'\nGROUP BY outcome, status_code, error_type, endpoint\nORDER BY requests DESC\n"
+                  }
+                }
+              }
+            ],
+            "metricVisualization": "NUMBER"
+          },
+          "title": "Resumen por outcome (SQL)"
+        },
+        "width": 24,
+        "yPos": 100
+      },
+      {
+        "height": 16,
+        "widget": {
+          "timeSeriesTable": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "opsAnalyticsQuery": {
+                    "sql": "-- Latencia del backend (latency_ms del log) y monto por categor??a.\n-- Complementa la latencia nativa: aqu?? es tiempo dentro del handler, sin red ni arranque en fr??o.\n-- Gr??fica sugerida: tabla o barras ?? X = category.\nSELECT\n  IFNULL(JSON_VALUE(json_payload.category), '(sin categor??a)') AS category,\n  COUNT(*) AS requests,\n  APPROX_QUANTILES(SAFE_CAST(JSON_VALUE(json_payload.latency_ms) AS FLOAT64), 100)[OFFSET(50)] AS latency_p50_ms,\n  APPROX_QUANTILES(SAFE_CAST(JSON_VALUE(json_payload.latency_ms) AS FLOAT64), 100)[OFFSET(95)] AS latency_p95_ms,\n  ROUND(AVG(IF(JSON_VALUE(json_payload.endpoint) = 'POST /orders'\n               AND JSON_VALUE(json_payload.outcome) = 'success',\n               SAFE_CAST(JSON_VALUE(json_payload.amount) AS FLOAT64), NULL)), 2) AS avg_amount_created\nFROM `lab-observabilidad.global._Default._Default`\nWHERE JSON_VALUE(json_payload.message) = 'request_completed'\n  AND JSON_VALUE(resource.labels.service_name) = 'orders-api'\nGROUP BY category\nORDER BY requests DESC\n\n"
+                  }
+                }
+              }
+            ],
+            "metricVisualization": "NUMBER"
+          },
+          "title": "Latencia y amount (SQL) table"
+        },
+        "width": 24,
+        "yPos": 116
+      }
+    ]
+  },
+  "name": "projects/lab-observabilidad/dashboards/1e1c07f9-84d3-45ee-adda-48294157448b"
+}
